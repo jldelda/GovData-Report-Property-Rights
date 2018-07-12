@@ -1,0 +1,35 @@
+---
+title: "Query Data"
+author: "Jose Luis Delgado Davara"
+date: "July 12, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(data360r)
+```
+
+## Get all indicators
+
+```{r cars}
+#get all indicator metadata in Govdata360
+df_indicators <- get_metadata360(site="gov", metadata_type = "indicators")
+df_indicators = as.data.frame(df_indicators)
+
+df_indicators$timeframes = as.character(df_indicators$timeframes)
+df_indicators$doNotUseViz = as.character(df_indicators$doNotUseViz)
+
+write.csv(df_indicators, "List_of_indicators.csv")
+
+df_indicators_TC <- get_metadata360(site="tc", metadata_type = "indicators")
+
+df_indicators_All <- get_metadata360(metadata_type = "indicators")
+write.csv(df_indicators, "List_of_indicators_All.csv")
+```
+
+## Get data
+
+```{r}
+Data1 = get_data360(indicator_id='290')
+```
+
