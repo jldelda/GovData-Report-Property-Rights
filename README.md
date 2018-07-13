@@ -45,3 +45,11 @@ The indicators used for this report are:
 - A604 termination of contracts by state
 - B607 efficiency of land tenure policy
 - B608 land tenure insecurity
+
+## Requirements
+- R library Data360r
+- RStudio was used for this development
+
+## Licence
+
+MIT License

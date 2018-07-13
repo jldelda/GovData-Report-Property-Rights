@@ -3,33 +3,60 @@ title: "Query Data"
 author: "Jose Luis Delgado Davara"
 date: "July 12, 2018"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 library(data360r)
+library(reshape2)
 ```
 
-## Get all indicators
+This markdown has three sections:
+1) Reshape indicators from IPD
+2) Get and format all the indicators via API (except IPD).
+3) Join both previous tables together
+4) Filter countries from IDA/IBRD
 
-```{r cars}
-#get all indicator metadata in Govdata360
-df_indicators <- get_metadata360(site="gov", metadata_type = "indicators")
-df_indicators = as.data.frame(df_indicators)
-
-df_indicators$timeframes = as.character(df_indicators$timeframes)
-df_indicators$doNotUseViz = as.character(df_indicators$doNotUseViz)
-
-write.csv(df_indicators, "List_of_indicators.csv")
-
-df_indicators_TC <- get_metadata360(site="tc", metadata_type = "indicators")
-
-df_indicators_All <- get_metadata360(metadata_type = "indicators")
-write.csv(df_indicators, "List_of_indicators_All.csv")
-```
-
-## Get data
+## 1) Reshape indicators from IPD
 
 ```{r}
-Data1 = get_data360(indicator_id='290')
+IPD.raw = read.csv("Data/IPD selection of indicators.csv")
+
+IPD = melt(IPD.raw, id.vars=c("ISO3", "Country", "Year"))
+colnames(IPD)[4] = 'Indicator'
+colnames(IPD)[2] = 'Country Name'
+colnames(IPD)[1] = 'Country ISO3'
+IPD$'Subindicator Type' = "Score (0-4)"
+IPD = IPD[is.na(IPD$value) == F,]
 ```
+
+## 2) Get and format all the indicators via API 
+
+```{r Get indicators}
+indicators = c('290', '2763', '291', '294', '747', '476', '477', '478', '468', '470', '471', '472', '473', '28828', '370', '27881', '27882', '27897', '27914', '27926')
+
+Data.raw = get_data360(indicator_id = indicators)
+```
+
+```{r}
+API = melt(Data.raw, id.vars=c("Country ISO3", "Country Name", "Indicator", "Subindicator Type"))
+
+colnames(API)[5] = 'Year'
+API = API[is.na(API$value) == F,]
+API$value = round(API$value, digits = 2)
+```
+
+## 3) Join both previous tables together
+
+```{r}
+Table = rbind(API, IPD)
+write.csv(Table, file = "Data/Data_Tableau.csv")
+```
+
+
+
+
+
+
 
