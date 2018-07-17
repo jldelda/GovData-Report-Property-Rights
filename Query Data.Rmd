@@ -34,6 +34,7 @@ IPD = IPD[is.na(IPD$value) == F,]
 ## 2) Get and format all the indicators via API 
 
 ```{r Get indicators}
+#This ids correspond to the ids in the Data360r library
 indicators = c('290', '2763', '291', '294', '747', '476', '477', '478', '468', '470', '471', '472', '473', '28828', '370', '27881', '27882', '27897', '27914', '27926')
 
 Data.raw = get_data360(indicator_id = indicators)
